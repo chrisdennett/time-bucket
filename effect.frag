@@ -6,6 +6,9 @@ varying vec2 vTexCoord;
 // our texture coming from p5
 uniform sampler2D webcamTexture;
 
+// number of columns coming from p5
+uniform float totalColumns;
+
 // REMEMBER CHRIS - THIS IS ALL FROM THE POINT OF VIEW OF A PIXEL
 void main() {
   // vTexCoord is a value that goes from 0.0 - 1.0 depending on the pixel's location
@@ -18,17 +21,15 @@ void main() {
   // coord.x = 1.0 - coord.x;
   // coord.y = 1.0 - coord.y;
 
-  // make a 4 x 4 grid
-  const int totalCols = 86;
-  float cellSize = 1.0 / float(totalCols);
+  float cellSize = 1.0 / float(totalColumns);
 
   // find out which cell this pixel is in
   float currCol = floor(coord.x / cellSize) + 1.0;
   float currRow = floor(coord.y / cellSize) + 1.0;
 
   // grab the pixel position at the top left of each webcam cell
-  float textureX = currCol/float(totalCols);
-  float textureY = currRow/float(totalCols);
+  float textureX = currCol/float(totalColumns);
+  float textureY = currRow/float(totalColumns);
 
   vec2 gridCord = vec2(textureX, textureY);
 
