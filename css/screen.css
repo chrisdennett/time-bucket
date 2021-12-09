@@ -2,9 +2,6 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background-color: wheat;
-}
-
-canvas {
-  background-color: white;
+  background-color: black;
+  color: whitesmoke;
 }
