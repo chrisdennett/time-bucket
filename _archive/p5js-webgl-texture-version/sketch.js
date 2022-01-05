@@ -13,24 +13,22 @@ let numFrames = 100; // how many frames to store. We will run out of memory at a
 let w = 512;
 let h = 512;
 
-const canvasWidth = 1280;
-const canvasHeight = 1028;
-
 let smallestDiameterSlider;
 let stepsSlider;
 let isReversedCheckbox;
 let isReversed;
+let tempImg;
 let isSquareCheckbox;
 let isSquare;
 
 function setup() {
   // shaders require WEBGL mode to work
-  createCanvas(canvasWidth, canvasHeight, WEBGL);
+  createCanvas(windowWidth, windowHeight, WEBGL);
   noStroke();
 
   // initialize the webcam at the window size
   cam = createCapture(VIDEO);
-  cam.size(canvasWidth, canvasHeight);
+  cam.size(windowWidth, windowHeight);
 
   // hide the html element that createCapture adds to the screen
   cam.hide();
@@ -59,6 +57,8 @@ function setup() {
     let p = createGraphics(w, h);
     pastFrames.push(p);
   }
+
+  tempImg = createGraphics(w, h, WEBGL);
 }
 
 function isReversedToggle() {
@@ -70,7 +70,7 @@ function isSquareToggle() {
 }
 
 function draw() {
-  // translate(-width / 2, -height / 2);
+  translate(-width / 2, -height / 2);
 
   // if number of steps change
   let totalSteps = stepsSlider.value();
@@ -93,13 +93,14 @@ function draw() {
     pastFrames[i] = pastFrames[i + 1];
   }
 
-  let smallestDiam = smallestDiameterSlider.value() * canvasHeight;
-  let largestDiam = canvasHeight;
+  let smallestDiam = smallestDiameterSlider.value() * windowWidth;
+  let largestDiam = windowWidth;
   let diamStep = (largestDiam - smallestDiam) / pastFrames.length;
 
-  let frameIndex;
+  // translate(width, 0);
+  // scale(-1, 1);
 
-  scale(-1, 1);
+  let frameIndex;
 
   for (let i = 0; i < pastFrames.length; i++) {
     if (isReversed) {
@@ -109,14 +110,21 @@ function draw() {
     }
 
     const srcImg = pastFrames[frameIndex];
-    const outWidth = canvasHeight - i * diamStep;
+    const outWidth = width - i * diamStep;
+
+    // tempImg.background(255, 0, 255);
+    tempImg.texture(srcImg);
+    // tempImg.scale(1, 2);
+    tempImg.rect(0, 0, srcImg.width, srcImg.height);
 
     texture(srcImg);
+    let centerX = width / 2 - outWidth / 2;
+    let centerY = height / 2 - outWidth / 2;
 
     if (isSquare) {
-      rect(0 - outWidth / 2, 0 - outWidth / 2, outWidth, outWidth);
+      rect(centerX, centerY, outWidth, outWidth);
     } else {
-      circle(0, 0, outWidth);
+      circle(width / 2, height / 2, outWidth);
     }
   }
 
